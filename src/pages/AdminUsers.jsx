@@ -82,62 +82,25 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await api.get('/users');
-      setUsers(response.data || []);
+      
+      if (response && Array.isArray(response)) {
+        setUsers(response);
+      } else {
+        setUsers([]);
+        toast.warning('No users found');
+      }
     } catch (error) {
       console.error('Error fetching users:', error);
-      // Mock data for demonstration
-      setUsers([
-        {
-          id: 1,
-          firstName: 'Ahmed',
-          lastName: 'Benali',
-          username: 'ahmed.benali',
-          email: 'ahmed.benali@student.university.edu',
-          roles: [{ name: 'ROLE_STUDENT' }],
-          createdAt: '2024-01-15',
-          lastLogin: '2024-03-15'
-        },
-        {
-          id: 2,
-          firstName: 'Fatima',
-          lastName: 'Zahra',
-          username: 'f.zahra',
-          email: 'f.zahra@university.edu',
-          roles: [{ name: 'ROLE_PROFESSOR' }],
-          createdAt: '2023-09-01',
-          lastLogin: '2024-03-14'
-        },
-        {
-          id: 3,
-          firstName: 'Sarah',
-          lastName: 'Admin',
-          username: 'admin',
-          email: 'admin@university.edu',
-          roles: [{ name: 'ROLE_ADMIN' }],
-          createdAt: '2023-08-01',
-          lastLogin: '2024-03-15'
-        },
-        {
-          id: 4,
-          firstName: 'Omar',
-          lastName: 'Hassan',
-          username: 'omar.hassan',
-          email: 'omar.hassan@student.university.edu',
-          roles: [{ name: 'ROLE_STUDENT' }],
-          createdAt: '2024-02-01',
-          lastLogin: '2024-03-13'
-        },
-        {
-          id: 5,
-          firstName: 'Youssef',
-          lastName: 'Alami',
-          username: 'y.alami',
-          email: 'y.alami@university.edu',
-          roles: [{ name: 'ROLE_PROFESSOR' }],
-          createdAt: '2023-10-15',
-          lastLogin: '2024-03-12'
-        }
-      ]);
+      
+      if (error.response?.status === 403) {
+        toast.error('Access denied. Admin privileges required.');
+      } else if (error.response?.status === 401) {
+        toast.error('Authentication required. Please login again.');
+      } else {
+        toast.error('Failed to fetch users from database');
+      }
+      
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -188,7 +151,7 @@ const AdminUsers = () => {
 
   const handleCreateUser = async () => {
     try {
-      const response = await api.post('/api/auth/signup', {
+      const response = await api.post('/auth/register', {
         ...newUser,
         roles: [newUser.role]
       });
@@ -213,7 +176,7 @@ const AdminUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await api.delete(`/api/users/${userId}`);
+        await api.delete(`/users/${userId}`);
         toast.success('User deleted successfully');
         fetchUsers();
       } catch (error) {
@@ -502,3 +465,4 @@ const AdminUsers = () => {
 };
 
 export default AdminUsers;
+            
