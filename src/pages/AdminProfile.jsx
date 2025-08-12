@@ -142,7 +142,7 @@ const AdminProfile = () => {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      <DashboardLayout role="admin">
         <div className="flex items-center justify-center min-h-[400px]">
           <Loader2 className="h-8 w-8 animate-spin" />
           <span className="ml-2">Chargement du profil...</span>
@@ -153,7 +153,7 @@ const AdminProfile = () => {
 
   if (error) {
     return (
-      <DashboardLayout>
+      <DashboardLayout role="admin">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
@@ -166,7 +166,7 @@ const AdminProfile = () => {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout role="admin">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
